@@ -1,6 +1,6 @@
 {
   "name": "conf-handler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Utility for finding differences in configuration files",
   "main": "",
   "keywords": [
@@ -46,5 +46,8 @@
     "gulp-babel": "^8.0.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2"
+  },
+  "dependencies": {
+    "commander": "^2.20.0"
   }
 }
