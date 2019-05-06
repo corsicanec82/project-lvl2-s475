@@ -7,3 +7,16 @@ node_js:
 
 script:
   - make lint
+  - make test-coverage
+
+env:
+  global:
+    - secure: "H0Yl/IbvfE1YRFOTGk7FJvHDz50YaqgSFl+1gcm5cjCr1bomT2DYsNECUgC6EZ5vQRXgxUOBRFtg2tx2KVhj+FpmbgBoh2pDBaV3oJErU2bTK8/cA5KGqp/KMciebseqb/pqhvbWF58FMxCDXWi/0XbZYlMbTK+VIDK2IFLeue/aCSDUg620utXeLnGVrB/MzglMP8TWA3KAfyr+EsBCijRqv1yJvMuXqh96sIrNQQgTiiIAVhNf95DS/pNmeOe79K6HKcPAjNZD12tH4bQTnY54tskamJaOseSaaCZ4rf0vJ234nidEOYDA9lbjHs48lViAQPfGlAfgxwCpr09jzmOnmZTqQBBye6NGGaDtk9xx7hXHgi9lBM+mJziVKbxkcZzd2I4NljXmSYrbIyxUgEItXNFSAW8M3R7BJ0MwtS+RUt+9sTxJgXXgD0qVGbbfOaQcndaP6vDSw85+xt8HXml4pPpB2Vr75uJWLSkVI0p6fKpeXcfTr5Yp2rfXAWZ8zV1ay2ulTe8SN72ldhnbFIL3vrTYIBSyGyKQ/38AGF8RTsl6E5NL1vat7ZQ1IKF6eTpuf/7OKnnjYMQR/2IK9of05Yt1xf1qNsHGoNSJnto+j+Cp20sLwmaAL1BhbXHssR/+NtcX8X8mU/NvAWrdj2KglsHh8t0W+8otSAXHRCc="
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT

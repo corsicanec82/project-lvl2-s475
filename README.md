@@ -10,3 +10,5 @@
 ```sh
 $ sudo npm install -g conf-handler
 ```
+
+[![asciicast](https://asciinema.org/a/3nSG4OdfDNkrSr01VkTv57Nrt.svg)](https://asciinema.org/a/3nSG4OdfDNkrSr01VkTv57Nrt)
