@@ -3,3 +3,5 @@ node_modules
 coverage
 /before.json
 /after.json
+/before.yml
+/after.yml
