@@ -11,4 +11,4 @@
 $ sudo npm install -g conf-handler
 ```
 
-[![asciicast](https://asciinema.org/a/zgdLQG4aI86eNsKjdSfb6kJ7z.svg)](https://asciinema.org/a/zgdLQG4aI86eNsKjdSfb6kJ7z)
+[![asciicast](https://asciinema.org/a/UXYSPkZ9WZIQyzPUyJQDwcSf6.svg)](https://asciinema.org/a/UXYSPkZ9WZIQyzPUyJQDwcSf6)

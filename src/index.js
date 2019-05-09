@@ -35,6 +35,5 @@ export default (firstPathToFile, secondPathToFile) => {
   } catch (e) {
     console.error(`${e.name}: ${e.message}`);
   }
+  return true;
 };
-
-export { compare };
