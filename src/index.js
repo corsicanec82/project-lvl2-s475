@@ -42,7 +42,7 @@ export default (firstPathToFile, secondPathToFile) => {
     const firstObj = parse(readFile(firstPathToFile));
     const secondObj = parse(readFile(secondPathToFile));
     const ast = compare(firstObj, secondObj);
-    console.log(ast);
+    // console.log(ast);
     console.log(render(ast));
   } catch (e) {
     console.error(`${e.name}: ${e.message}`);
