@@ -1,3 +1,4 @@
+import fs from 'fs';
 import genDiff from '../src';
 
 const pathToData = '__tests__/__fixtures__/';
@@ -15,24 +16,13 @@ test.each(pathError)('test error %#', (firstPathToFile, secondPathToFile, expect
   expect(console.error).toHaveBeenCalledWith(expected);
 });
 
-const expected = [
-  '{',
-  '    host: hexlet.io',
-  '  - timeout: 50',
-  '  + timeout: 20',
-  '  - proxy: 123.234.53.22',
-  '  - follow: false',
-  '  + verbose: true',
-  '}',
-].join('\n');
-
 const pathCorrect = [
-  [`${pathToData}before.json`, `${pathToData}after.json`],
-  [`${pathToData}before.yml`, `${pathToData}after.yml`],
-  [`${pathToData}before.ini`, `${pathToData}after.ini`],
+  [`${pathToData}before.json`, `${pathToData}after.json`, fs.readFileSync(`${pathToData}json.result`, 'utf8')],
+  [`${pathToData}before.yml`, `${pathToData}after.yml`, fs.readFileSync(`${pathToData}yaml.result`, 'utf8')],
+  [`${pathToData}before.ini`, `${pathToData}after.ini`, fs.readFileSync(`${pathToData}ini.result`, 'utf8')],
 ];
 
-test.each(pathCorrect)('test format %#', (firstPathToFile, secondPathToFile) => {
+test.each(pathCorrect)('test format %#', (firstPathToFile, secondPathToFile, expected) => {
   console.log = jest.fn();
   genDiff(firstPathToFile, secondPathToFile);
   expect(console.log).toHaveBeenCalledWith(expected);
