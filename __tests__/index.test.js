@@ -11,9 +11,7 @@ const pathError = [
 ];
 
 test.each(pathError)('test error %#', (firstPathToFile, secondPathToFile, expected) => {
-  console.error = jest.fn();
-  genDiff(firstPathToFile, secondPathToFile);
-  expect(console.error).toHaveBeenCalledWith(expected);
+  expect(genDiff(firstPathToFile, secondPathToFile)).toBe(expected);
 });
 
 const pathCorrect = [
@@ -23,7 +21,5 @@ const pathCorrect = [
 ];
 
 test.each(pathCorrect)('test format %#', (firstPathToFile, secondPathToFile, expected) => {
-  console.log = jest.fn();
-  genDiff(firstPathToFile, secondPathToFile);
-  expect(console.log).toHaveBeenCalledWith(expected);
+  expect(genDiff(firstPathToFile, secondPathToFile, 'tree')).toBe(expected);
 });

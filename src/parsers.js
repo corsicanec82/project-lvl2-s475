@@ -3,18 +3,22 @@ import path from 'path';
 import yaml from 'js-yaml';
 import ini from 'ini';
 
-const readFile = (pathToFile) => {
+export const readFile = (pathToFile) => {
   const format = path.extname(pathToFile).replace('.', '');
   const content = fs.readFileSync(pathToFile, 'utf8');
   return { format, content };
 };
 
-const parsers = {
-  json: JSON.parse,
-  yml: yaml.safeLoad,
-  ini: ini.decode,
+const parsers = new Map();
+
+export const addParser = (fileExtension, parser) => {
+  if (!parsers.has(fileExtension)) {
+    parsers[fileExtension] = parser;
+  }
 };
 
-const parse = data => parsers[data.format](data.content);
+export const parse = data => parsers[data.format](data.content);
 
-export { readFile, parse };
+addParser('json', JSON.parse);
+addParser('yml', yaml.safeLoad);
+addParser('ini', ini.decode);

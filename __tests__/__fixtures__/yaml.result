@@ -28,7 +28,7 @@
   - group2: {
         abc: 12345
     }
-  - array: [1, {  key: value}, 3]
+  - array: [1, { key: value }, 3]
   + group3: {
         fee: 100500
     }

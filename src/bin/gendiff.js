@@ -6,11 +6,12 @@ import genDiff from '..';
 programm
   .version('1.4.2', '-v, --version')
   .description('Compares two configuration files and shows a difference.')
-  .option('-f, --format [type]', 'output format')
+  .option('-f, --format [type]', 'output format', 'tree')
   .arguments('<firstConfig> <secondConfig>');
 
 programm.action((firstConfig, secondConfig) => {
-  genDiff(firstConfig, secondConfig);
+  const diff = genDiff(firstConfig, secondConfig, programm.format);
+  console.log(diff);
 });
 
 programm.parse(process.argv);

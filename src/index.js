@@ -1,64 +1,53 @@
 import _ from 'lodash';
-import { readFile, parse } from './parsers';
+import { readFile, parse, addParser } from './parsers';
+import { addFormatter, getFormatter } from './formatters';
 
-const rebuildKeys = (el) => {
-  if (Array.isArray(el)) {
-    return el.map(rebuildKeys);
-  }
-  if (!_.isPlainObject(el)) {
-    return el;
-  }
+const genDiff = (data1, data2) => {
+  const part1 = Object.entries(data1)
+    .map(([key, value]) => {
+      const element = {
+        key,
+        value,
+        status: 'unchanged',
+        children: false,
+      };
+      if (!_.has(data2, key)) {
+        return { ...element, status: 'removed' };
+      }
+      if (_.isEqual(value, data2[key])) {
+        return element;
+      }
+      if (_.isPlainObject(value) && _.isPlainObject(data2[key])) {
+        return { ...element, value: genDiff(value, data2[key]), children: true };
+      }
+      return { ...element, status: 'updated', updateValue: data2[key] };
+    });
 
-  return Object.entries(el)
-    .reduce((acc, [key, value]) => ({ ...acc, [`  ${key}`]: rebuildKeys(value) }), {});
+  const part2 = Object.keys(data2)
+    .filter(key => !_.has(data1, key))
+    .map(key => (
+      {
+        key,
+        value: data2[key],
+        status: 'added',
+        children: false,
+      }
+    ));
+
+  return [...part1, ...part2];
 };
 
-const getCompareResult = (object1, object2) => {
-  const ast1 = Object.entries(object1)
-    .reduce((acc, [key, value]) => {
-      if (!_.has(object2, key)) {
-        return { ...acc, [`- ${key}`]: rebuildKeys(value) };
-      }
-      if (_.isEqual(value, object2[key])) {
-        return { ...acc, [`  ${key}`]: rebuildKeys(value) };
-      }
-      if (_.isPlainObject(value) && _.isPlainObject(object2[key])) {
-        return { ...acc, [`  ${key}`]: getCompareResult(value, object2[key]) };
-      }
-      return { ...acc, [`- ${key}`]: rebuildKeys(value), [`+ ${key}`]: rebuildKeys(object2[key]) };
-    }, {});
+const render = (diff, format) => getFormatter(format)(diff);
 
-  const ast2 = Object.keys(object2)
-    .filter(key => !_.has(object1, key))
-    .reduce((acc, key) => ({ ...acc, [`+ ${key}`]: rebuildKeys(object2[key]) }), {});
-
-  return { ...ast1, ...ast2 };
-};
-
-const render = (ast, depth = 0, inline = '\n') => {
-  if (Array.isArray(ast)) {
-    return `[${ast.map(el => render(el, -2, '')).join(', ')}]`;
-  }
-  if (!_.isPlainObject(ast)) {
-    return ast;
-  }
-
-  const str = Object.entries(ast)
-    .reduce((acc, [key, value]) => {
-      const newValue = _.isPlainObject(value) ? render(value, depth + 4) : render(value);
-      return `${acc}${_.repeat(' ', depth + 2)}${key}: ${newValue}${inline}`;
-    }, '');
-
-  return `{${inline}${str}${_.repeat(' ', depth)}}`;
-};
-
-export default (firstPathToFile, secondPathToFile) => {
+export default (pathToFile1, pathToFile2, format) => {
   try {
-    const firstObj = parse(readFile(firstPathToFile));
-    const secondObj = parse(readFile(secondPathToFile));
-    const ast = getCompareResult(firstObj, secondObj);
-    console.log(render(ast));
+    const data1 = parse(readFile(pathToFile1));
+    const data2 = parse(readFile(pathToFile2));
+    const diff = genDiff(data1, data2);
+    return render(diff, format);
   } catch (e) {
-    console.error(`${e.name}: ${e.message}`);
+    return `${e.name}: ${e.message}`;
   }
 };
+
+export { addParser, addFormatter };
