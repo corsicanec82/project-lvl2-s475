@@ -1,15 +1,23 @@
 import _ from 'lodash';
+import yaml from 'js-yaml';
+import ini from 'ini';
 import { readFile, parse, addParser } from './parsers';
 import { addFormatter, getFormatter } from './formatters';
+import tree from './formatters/tree';
+import plain from './formatters/plain';
+
+addParser('json', JSON.parse);
+addParser('yml', yaml.safeLoad);
+addParser('ini', ini.decode);
+
+addFormatter('tree', tree);
+addFormatter('plain', plain);
 
 const genDiff = (data1, data2) => {
   const part1 = Object.entries(data1)
     .map(([key, value]) => {
       const element = {
-        key,
-        value,
-        status: 'unchanged',
-        children: false,
+        key, value, children: false, status: 'unchanged',
       };
       if (!_.has(data2, key)) {
         return { ...element, status: 'removed' };
@@ -27,10 +35,7 @@ const genDiff = (data1, data2) => {
     .filter(key => !_.has(data1, key))
     .map(key => (
       {
-        key,
-        value: data2[key],
-        status: 'added',
-        children: false,
+        key, value: data2[key], status: 'added', children: false,
       }
     ));
 

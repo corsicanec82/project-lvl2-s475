@@ -1,24 +1,5 @@
 import _ from 'lodash';
-
-const stringify = (value, indent, inline = false) => {
-  if (_.isArray(value)) {
-    const strFromArray = value
-      .map(el => stringify(el, indent, true))
-      .join(', ');
-    return `[${strFromArray}]`;
-  }
-
-  if (_.isPlainObject(value)) {
-    const strFromObj = Object.entries(value)
-      .map(([k, v]) => `${inline ? '' : ' '.repeat(indent + 4)}${k}: ${v}`)
-      .join(inline ? ', ' : '\n');
-    return inline
-      ? `{ ${strFromObj} }`
-      : `{\n${strFromObj}\n${' '.repeat(indent)}}`;
-  }
-
-  return value;
-};
+import { stringify } from '.';
 
 const getStatus = (status) => {
   switch (status) {
