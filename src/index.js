@@ -46,7 +46,7 @@ const genDiff = (data1, data2) => {
       element.status = 'updated';
       element.updateValue = data2[key];
     }
-    return { ...element, status: 'updated', updateValue: data2[key] };
+    return element;
   };
 
   const transformData2 = key => ({
