@@ -37,22 +37,23 @@ const stringify = (value, indent, inline = false) => {
 
 const tree = (diff, indent = 0) => {
   const list = diff.reduce((acc, node) => {
+    const getProperty = (status, value) => `${' '.repeat(indent + 2)}${status} ${node.key}: ${value}\n`;
     if (node.type === 'added') {
-      return `${acc}${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}\n`;
+      return `${acc}${getProperty('+', stringify(node.newValue, indent + 4))}`;
     }
     if (node.type === 'removed') {
-      return `${acc}${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}\n`;
+      return `${acc}${getProperty('-', stringify(node.oldValue, indent + 4))}`;
     }
     if (node.type === 'changed') {
-      return `${acc}${' '.repeat(indent + 2)}  ${node.key}: ${tree(node.children, indent + 4)}\n`;
+      return `${acc}${getProperty(' ', tree(node.children, indent + 4))}`;
     }
     if (node.type === 'unchanged') {
-      return `${acc}${' '.repeat(indent + 2)}  ${node.key}: ${stringify(node.oldValue, indent + 4)}\n`;
+      return `${acc}${getProperty(' ', stringify(node.oldValue, indent + 4))}`;
     }
     return [
       `${acc}`,
-      `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}\n`,
-      `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}\n`,
+      getProperty('-', stringify(node.oldValue, indent + 4)),
+      getProperty('+', stringify(node.newValue, indent + 4)),
     ].join('');
   }, '');
 
