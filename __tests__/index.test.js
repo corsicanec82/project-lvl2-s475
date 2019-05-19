@@ -15,17 +15,20 @@ test.each(pathError)('test error %#', (firstPathToFile, secondPathToFile, expect
 });
 
 const dataTree = [
-  [`${pathToData}before.json`, `${pathToData}after.json`, 'tree', fs.readFileSync(`${pathToData}json-tree.result`, 'utf8')],
-  [`${pathToData}before.yml`, `${pathToData}after.yml`, 'tree', fs.readFileSync(`${pathToData}json-tree.result`, 'utf8')],
-  [`${pathToData}before.ini`, `${pathToData}after.ini`, 'tree', fs.readFileSync(`${pathToData}ini-tree.result`, 'utf8')],
-  [`${pathToData}before.json`, `${pathToData}after.json`, 'plain', fs.readFileSync(`${pathToData}json-plain.result`, 'utf8')],
-  [`${pathToData}before.yml`, `${pathToData}after.yml`, 'plain', fs.readFileSync(`${pathToData}json-plain.result`, 'utf8')],
-  [`${pathToData}before.ini`, `${pathToData}after.ini`, 'plain', fs.readFileSync(`${pathToData}ini-plain.result`, 'utf8')],
-  [`${pathToData}before.json`, `${pathToData}after.json`, 'json', fs.readFileSync(`${pathToData}json-json.result`, 'utf8')],
-  [`${pathToData}before.yml`, `${pathToData}after.yml`, 'json', fs.readFileSync(`${pathToData}json-json.result`, 'utf8')],
-  [`${pathToData}before.ini`, `${pathToData}after.ini`, 'json', fs.readFileSync(`${pathToData}ini-json.result`, 'utf8')],
+  ['before.json', 'after.json', 'tree', 'json-tree.result'],
+  ['before.yml', 'after.yml', 'tree', 'json-tree.result'],
+  ['before.ini', 'after.ini', 'tree', 'ini-tree.result'],
+  ['before.json', 'after.json', 'plain', 'json-plain.result'],
+  ['before.yml', 'after.yml', 'plain', 'json-plain.result'],
+  ['before.ini', 'after.ini', 'plain', 'ini-plain.result'],
+  ['before.json', 'after.json', 'json', 'json-json.result'],
+  ['before.yml', 'after.yml', 'json', 'json-json.result'],
+  ['before.ini', 'after.ini', 'json', 'ini-json.result'],
 ];
 
-test.each(dataTree)('test format \'tree\' %#', (firstPathToFile, secondPathToFile, format, expected) => {
+test.each(dataTree)('test format \'tree\' %#', (file1, file2, format, expectedFile) => {
+  const firstPathToFile = `${pathToData}${file1}`;
+  const secondPathToFile = `${pathToData}${file2}`;
+  const expected = fs.readFileSync(`${pathToData}${expectedFile}`, 'utf8');
   expect(genDiff(firstPathToFile, secondPathToFile, format)).toBe(expected);
 });
