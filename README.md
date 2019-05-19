@@ -12,6 +12,8 @@ The utility compares two configuration files and displays the result of the comp
 ```sh
 $ sudo npm install -g conf-handler
 ```
+
+
 ### Use
 ```sh
 $ gendiff <first_file> <second_file>
