@@ -15,21 +15,14 @@ test.each(pathError)('test error %#', (firstPathToFile, secondPathToFile, expect
 });
 
 const dataTree = [
-  [`${pathToData}before.json`, `${pathToData}after.json`, fs.readFileSync(`${pathToData}json-tree.result`, 'utf8')],
-  [`${pathToData}before.yml`, `${pathToData}after.yml`, fs.readFileSync(`${pathToData}yaml-tree.result`, 'utf8')],
-  [`${pathToData}before.ini`, `${pathToData}after.ini`, fs.readFileSync(`${pathToData}ini-tree.result`, 'utf8')],
+  [`${pathToData}before.json`, `${pathToData}after.json`, 'tree', fs.readFileSync(`${pathToData}json-tree.result`, 'utf8')],
+  [`${pathToData}before.yml`, `${pathToData}after.yml`, 'tree', fs.readFileSync(`${pathToData}yaml-tree.result`, 'utf8')],
+  [`${pathToData}before.ini`, `${pathToData}after.ini`, 'tree', fs.readFileSync(`${pathToData}ini-tree.result`, 'utf8')],
+  [`${pathToData}before.json`, `${pathToData}after.json`, 'plain', fs.readFileSync(`${pathToData}json-plain.result`, 'utf8')],
+  [`${pathToData}before.yml`, `${pathToData}after.yml`, 'plain', fs.readFileSync(`${pathToData}yaml-plain.result`, 'utf8')],
+  [`${pathToData}before.ini`, `${pathToData}after.ini`, 'plain', fs.readFileSync(`${pathToData}ini-plain.result`, 'utf8')],
 ];
 
-test.each(dataTree)('test format \'tree\' %#', (firstPathToFile, secondPathToFile, expected) => {
-  expect(genDiff(firstPathToFile, secondPathToFile, 'tree')).toBe(expected);
-});
-
-const dataPlain = [
-  [`${pathToData}before.json`, `${pathToData}after.json`, fs.readFileSync(`${pathToData}json-plain.result`, 'utf8')],
-  [`${pathToData}before.yml`, `${pathToData}after.yml`, fs.readFileSync(`${pathToData}yaml-plain.result`, 'utf8')],
-  [`${pathToData}before.ini`, `${pathToData}after.ini`, fs.readFileSync(`${pathToData}ini-plain.result`, 'utf8')],
-];
-
-test.each(dataPlain)('test format \'plain\' %#', (firstPathToFile, secondPathToFile, expected) => {
-  expect(genDiff(firstPathToFile, secondPathToFile, 'plain')).toBe(expected);
+test.each(dataTree)('test format \'tree\' %#', (firstPathToFile, secondPathToFile, format, expected) => {
+  expect(genDiff(firstPathToFile, secondPathToFile, format)).toBe(expected);
 });
