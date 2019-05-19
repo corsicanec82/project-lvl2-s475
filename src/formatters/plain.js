@@ -1,37 +1,25 @@
 import _ from 'lodash';
 
-const getStatus = (status) => {
-  switch (status) {
-    case 'added':
-      return 'was added with value: ';
-    case 'removed':
-      return 'was removed';
-    case 'updated':
-      return 'was updated. From ';
-    default:
-      return '';
-  }
-};
-
 const showComplexValue = value => (
   value instanceof Object ? '[complex value]' : value
 );
 
 const plain = (diff, parent = []) => diff
-  .reduce((acc, obj) => {
+  .map((obj) => {
     if (_.has(obj, 'children')) {
-      return `${acc}${plain(obj.children, [...parent, obj.key])}`;
+      return plain(obj.children, [...parent, obj.key]);
     }
-    const updateProperty = _.has(obj, 'updateValue')
-      ? ` to '${showComplexValue(obj.updateValue, 0, true)}'`
-      : '';
-    const value = obj.status === 'removed'
-      ? ''
-      : `'${showComplexValue(obj.value, 0, true)}'`;
-    const property = obj.status !== 'unchanged'
-      ? `Property '${[...parent, obj.key].join('.')}' ${getStatus(obj.status)}${value}${updateProperty}\n`
-      : '';
-    return `${acc}${property}`;
-  }, '');
+    const str = `Property '${[...parent, obj.key].join('.')}'`;
+    if (obj.status === 'removed') {
+      return `${str} was removed`;
+    }
+    if (obj.status === 'added') {
+      return `${str} was added with value: '${showComplexValue(obj.value)}'`;
+    }
+    if (obj.status === 'updated') {
+      return `${str} was updated. From '${showComplexValue(obj.value)}' to '${showComplexValue(obj.updateValue)}'`;
+    }
+    return null;
+  }).filter(el => el !== null).join('\n');
 
 export default plain;

@@ -9,7 +9,7 @@ watch:
 
 publish:
 	npm login
-	npm publish --dry-run
+	npm publish
 
 lint:
 	npx eslint .

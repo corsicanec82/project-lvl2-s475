@@ -14,12 +14,22 @@ test.each(pathError)('test error %#', (firstPathToFile, secondPathToFile, expect
   expect(genDiff(firstPathToFile, secondPathToFile)).toBe(expected);
 });
 
-const pathCorrect = [
-  [`${pathToData}before.json`, `${pathToData}after.json`, fs.readFileSync(`${pathToData}json.result`, 'utf8')],
-  [`${pathToData}before.yml`, `${pathToData}after.yml`, fs.readFileSync(`${pathToData}yaml.result`, 'utf8')],
-  [`${pathToData}before.ini`, `${pathToData}after.ini`, fs.readFileSync(`${pathToData}ini.result`, 'utf8')],
+const dataTree = [
+  [`${pathToData}before.json`, `${pathToData}after.json`, fs.readFileSync(`${pathToData}json-tree.result`, 'utf8')],
+  [`${pathToData}before.yml`, `${pathToData}after.yml`, fs.readFileSync(`${pathToData}yaml-tree.result`, 'utf8')],
+  [`${pathToData}before.ini`, `${pathToData}after.ini`, fs.readFileSync(`${pathToData}ini-tree.result`, 'utf8')],
 ];
 
-test.each(pathCorrect)('test format %#', (firstPathToFile, secondPathToFile, expected) => {
+test.each(dataTree)('test format \'tree\' %#', (firstPathToFile, secondPathToFile, expected) => {
   expect(genDiff(firstPathToFile, secondPathToFile, 'tree')).toBe(expected);
+});
+
+const dataPlain = [
+  [`${pathToData}before.json`, `${pathToData}after.json`, fs.readFileSync(`${pathToData}json-plain.result`, 'utf8')],
+  [`${pathToData}before.yml`, `${pathToData}after.yml`, fs.readFileSync(`${pathToData}yaml-plain.result`, 'utf8')],
+  [`${pathToData}before.ini`, `${pathToData}after.ini`, fs.readFileSync(`${pathToData}ini-plain.result`, 'utf8')],
+];
+
+test.each(dataPlain)('test format \'plain\' %#', (firstPathToFile, secondPathToFile, expected) => {
+  expect(genDiff(firstPathToFile, secondPathToFile, 'plain')).toBe(expected);
 });

@@ -17,4 +17,4 @@ $ sudo npm install -g conf-handler
 $ gendiff <first_file> <second_file>
 ```
 
-[![asciicast](https://asciinema.org/a/Y0HBKFhKofi31uEagE2WrdAMw.svg)](https://asciinema.org/a/Y0HBKFhKofi31uEagE2WrdAMw)
+[![asciicast](https://asciinema.org/a/pjJWCJxRBZoab8uoWfRvvudmY.svg)](https://asciinema.org/a/pjJWCJxRBZoab8uoWfRvvudmY)
