@@ -1,43 +1,61 @@
 import _ from 'lodash';
-import yaml from 'js-yaml';
-import ini from 'ini';
 import { readFile, parse, addParser } from './parsers';
 import { addFormatter, getFormatter } from './formatters';
-import tree from './formatters/tree';
-import plain from './formatters/plain';
 
-addParser('json', JSON.parse);
-addParser('yml', yaml.safeLoad);
-addParser('ini', ini.decode);
+// const genDiff = (data1, data2) => {
+//   const part1 = Object.entries(data1)
+//     .map(([key, value]) => {
+//       const element = {
+//         key, value, children: false, status: 'unchanged',
+//       };
+//       if (!_.has(data2, key)) {
+//         return { ...element, status: 'removed' };
+//       }
+//       if (_.isEqual(value, data2[key])) {
+//         return element;
+//       }
+//       if (_.isPlainObject(value) && _.isPlainObject(data2[key])) {
+//         return { ...element, value: genDiff(value, data2[key]), children: true };
+//       }
+//       return { ...element, status: 'updated', updateValue: data2[key] };
+//     });
 
-addFormatter('tree', tree);
-addFormatter('plain', plain);
+//   const part2 = Object.keys(data2)
+//     .filter(key => !_.has(data1, key))
+//     .map(key => (
+//       {
+//         key, value: data2[key], status: 'added', children: false,
+//       }
+//     ));
+
+//   return [...part1, ...part2];
+// };
 
 const genDiff = (data1, data2) => {
-  const part1 = Object.entries(data1)
-    .map(([key, value]) => {
-      const element = {
-        key, value, children: false, status: 'unchanged',
-      };
-      if (!_.has(data2, key)) {
-        return { ...element, status: 'removed' };
-      }
-      if (_.isEqual(value, data2[key])) {
-        return element;
-      }
-      if (_.isPlainObject(value) && _.isPlainObject(data2[key])) {
-        return { ...element, value: genDiff(value, data2[key]), children: true };
-      }
-      return { ...element, status: 'updated', updateValue: data2[key] };
-    });
+  const transformData1 = ([key, value]) => {
+    const element = {
+      key, value, children: false, status: 'unchanged',
+    };
+    if (!_.has(data2, key)) {
+      return { ...element, status: 'removed' };
+    }
+    if (_.isEqual(value, data2[key])) {
+      return element;
+    }
+    if (_.isPlainObject(value) && _.isPlainObject(data2[key])) {
+      return { ...element, value: genDiff(value, data2[key]), children: true };
+    }
+    return { ...element, status: 'updated', updateValue: data2[key] };
+  };
 
-  const part2 = Object.keys(data2)
-    .filter(key => !_.has(data1, key))
-    .map(key => (
-      {
-        key, value: data2[key], status: 'added', children: false,
-      }
-    ));
+  const transformData2 = key => ({
+    key, value: data2[key], status: 'added', children: false,
+  });
+
+  const filterData2 = key => !_.has(data1, key);
+
+  const part1 = Object.entries(data1).map(transformData1);
+  const part2 = Object.keys(data2).filter(filterData2).map(transformData2);
 
   return [...part1, ...part2];
 };

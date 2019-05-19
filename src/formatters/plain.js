@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { stringify } from '.';
 
 const getStatus = (status) => {
   switch (status) {
@@ -14,17 +13,21 @@ const getStatus = (status) => {
   }
 };
 
+const showComplexValue = value => (
+  value instanceof Object ? '[complex value]' : value
+);
+
 const plain = (diff, parent = []) => diff
   .reduce((acc, obj) => {
     if (obj.children) {
       return `${acc}${plain(obj.value, [...parent, obj.key])}`;
     }
     const updateProperty = _.has(obj, 'updateValue')
-      ? ` to '${stringify(obj.updateValue, 0, true)}'`
+      ? ` to '${showComplexValue(obj.updateValue, 0, true)}'`
       : '';
     const value = obj.status === 'removed'
       ? ''
-      : `'${stringify(obj.value, 0, true)}'`;
+      : `'${showComplexValue(obj.value, 0, true)}'`;
     const property = obj.status !== 'unchanged'
       ? `Property '${[...parent, obj.key].join('.')}' ${getStatus(obj.status)}${value}${updateProperty}\n`
       : '';
