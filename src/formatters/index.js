@@ -11,3 +11,4 @@ export const getFormatter = format => formatters[format];
 
 addFormatter('tree', tree);
 addFormatter('plain', plain);
+addFormatter('json', JSON.stringify);

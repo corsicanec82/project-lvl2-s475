@@ -13,7 +13,7 @@ const genDiff = (data1, data2) => {
         return element;
       }
       if (_.isPlainObject(value) && _.isPlainObject(data2[key])) {
-        return { ...element, children: genDiff(value, data2[key]) };
+        return { ...element, children: genDiff(value, data2[key]), status: 'changed' };
       }
       return { ...element, status: 'updated', updateValue: data2[key] };
     });
