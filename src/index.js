@@ -33,17 +33,18 @@ import { addFormatter, getFormatter } from './formatters';
 
 const genDiff = (data1, data2) => {
   const transformData1 = ([key, value]) => {
-    const element = {
-      key, value, children: false, status: 'unchanged',
-    };
+    const element = { key, value, children: false };
     if (!_.has(data2, key)) {
-      return { ...element, status: 'removed' };
-    }
-    if (_.isEqual(value, data2[key])) {
-      return element;
-    }
-    if (_.isPlainObject(value) && _.isPlainObject(data2[key])) {
-      return { ...element, value: genDiff(value, data2[key]), children: true };
+      element.status = 'removed';
+    } else if (_.isEqual(value, data2[key])) {
+      element.status = 'unchanged';
+    } else if (_.isPlainObject(value) && _.isPlainObject(data2[key])) {
+      element.value = genDiff(value, data2[key]);
+      element.children = true;
+      element.status = 'unchanged';
+    } else {
+      element.status = 'updated';
+      element.updateValue = data2[key];
     }
     return { ...element, status: 'updated', updateValue: data2[key] };
   };

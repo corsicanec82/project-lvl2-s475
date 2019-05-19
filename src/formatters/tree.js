@@ -27,10 +27,9 @@ const stringify = (value, indent, inline = false) => {
   }
 
   if (_.isPlainObject(value)) {
-    const strFromObj = inline ? objectToStringInline(value) : objectToString(value);
     return inline
-      ? `{ ${strFromObj} }`
-      : `{\n${strFromObj}\n${' '.repeat(indent)}}`;
+      ? `{ ${objectToStringInline(value)} }`
+      : `{\n${objectToString(value)}\n${' '.repeat(indent)}}`;
   }
 
   return value;
