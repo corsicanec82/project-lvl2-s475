@@ -37,8 +37,8 @@ const stringify = (value, indent, inline = false) => {
 
 const tree = (diff, indent = 0) => {
   const el = diff.reduce((acc, obj) => {
-    const value = obj.children
-      ? tree(obj.value, indent + 4)
+    const value = _.has(obj, 'children')
+      ? tree(obj.children, indent + 4)
       : stringify(obj.value, indent + 4);
     const property = `${' '.repeat(indent + 2)}${getStatus(obj.status)} ${obj.key}: ${value}`;
     const updatedProperty = _.has(obj, 'updateValue')

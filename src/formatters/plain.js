@@ -19,8 +19,8 @@ const showComplexValue = value => (
 
 const plain = (diff, parent = []) => diff
   .reduce((acc, obj) => {
-    if (obj.children) {
-      return `${acc}${plain(obj.value, [...parent, obj.key])}`;
+    if (_.has(obj, 'children')) {
+      return `${acc}${plain(obj.children, [...parent, obj.key])}`;
     }
     const updateProperty = _.has(obj, 'updateValue')
       ? ` to '${showComplexValue(obj.updateValue, 0, true)}'`

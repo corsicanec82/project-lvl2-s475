@@ -32,31 +32,25 @@ import { addFormatter, getFormatter } from './formatters';
 // };
 
 const genDiff = (data1, data2) => {
-  const transformData1 = ([key, value]) => {
-    const element = { key, value, children: false };
-    if (!_.has(data2, key)) {
-      element.status = 'removed';
-    } else if (_.isEqual(value, data2[key])) {
-      element.status = 'unchanged';
-    } else if (_.isPlainObject(value) && _.isPlainObject(data2[key])) {
-      element.value = genDiff(value, data2[key]);
-      element.children = true;
-      element.status = 'unchanged';
-    } else {
-      element.status = 'updated';
-      element.updateValue = data2[key];
-    }
-    return element;
-  };
+  const part1 = Object.entries(data1)
+    .map(([key, value]) => {
+      const element = { status: 'unchanged' };
+      if (!_.has(data2, key)) {
+        element.status = 'removed';
+      } else if (!_.isEqual(value, data2[key])) {
+        if (_.isPlainObject(value) && _.isPlainObject(data2[key])) {
+          element.children = genDiff(value, data2[key]);
+        } else {
+          element.status = 'updated';
+          element.updateValue = data2[key];
+        }
+      }
+      return { key, value, ...element };
+    });
 
-  const transformData2 = key => ({
-    key, value: data2[key], status: 'added', children: false,
-  });
-
-  const filterData2 = key => !_.has(data1, key);
-
-  const part1 = Object.entries(data1).map(transformData1);
-  const part2 = Object.keys(data2).filter(filterData2).map(transformData2);
+  const part2 = Object.keys(data2)
+    .filter(key => !_.has(data1, key))
+    .map(key => ({ key, value: data2[key], status: 'added' }));
 
   return [...part1, ...part2];
 };

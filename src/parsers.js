@@ -12,9 +12,7 @@ export const readFile = (pathToFile) => {
 const parsers = new Map();
 
 export const addParser = (fileExtension, parser) => {
-  if (!parsers.has(fileExtension)) {
-    parsers[fileExtension] = parser;
-  }
+  parsers[fileExtension] = parser;
 };
 
 export const parse = data => parsers[data.format](data.content);
