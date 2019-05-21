@@ -23,27 +23,25 @@ const stringify = (value, indent, inline = false) => {
 };
 
 const tree = (diff, indent = 0) => {
-  const list = diff.reduce((acc, node) => {
-    if (node.type === 'added') {
-      return `${acc}${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}\n`;
+  const list = diff.map((node) => {
+    switch (node.type) {
+      case 'added':
+        return `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}`;
+      case 'removed':
+        return `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}`;
+      case 'changed':
+        return `${' '.repeat(indent + 2)}  ${node.key}: ${tree(node.children, indent + 4)}`;
+      case 'unchanged':
+        return `${' '.repeat(indent + 2)}  ${node.key}: ${stringify(node.oldValue, indent + 4)}`;
+      default:
+        return [
+          `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}`,
+          `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}`,
+        ];
     }
-    if (node.type === 'removed') {
-      return `${acc}${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}\n`;
-    }
-    if (node.type === 'changed') {
-      return `${acc}${' '.repeat(indent + 2)}  ${node.key}: ${tree(node.children, indent + 4)}\n`;
-    }
-    if (node.type === 'unchanged') {
-      return `${acc}${' '.repeat(indent + 2)}  ${node.key}: ${stringify(node.oldValue, indent + 4)}\n`;
-    }
-    return [
-      `${acc}`,
-      `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}\n`,
-      `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}\n`,
-    ].join('');
-  }, '');
+  });
 
-  return `{\n${list}${' '.repeat(indent)}}`;
+  return `{\n${_.flatten(list).join('\n')}\n${' '.repeat(indent)}}`;
 };
 
 export default tree;

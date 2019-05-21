@@ -1,44 +1,43 @@
+import fs from 'fs';
+import path from 'path';
 import _ from 'lodash';
-import { readFile, parse, addParser } from './parsers';
-import { addFormatter, getFormatter } from './formatters';
+import parse from './parsers';
+import getFormatter from './formatters';
+
+const readFile = (pathToFile) => {
+  const format = path.extname(pathToFile).replace('.', '');
+  const content = fs.readFileSync(pathToFile, 'utf8');
+  return { format, content };
+};
 
 const node = (type, key, oldValue, newValue = null, children = null) => ({
   type, key, oldValue, newValue, children,
 });
 
-const genDiff = (data1, data2) => {
-  const part1 = Object.entries(data1)
-    .map(([key, value]) => {
+const genDiff = (data1, data2) => (
+  _.union(Object.keys(data1), Object.keys(data2))
+    .map((key) => {
       if (!_.has(data2, key)) {
-        return node('removed', key, value);
+        return node('removed', key, data1[key]);
       }
-      if (_.isEqual(value, data2[key])) {
-        return node('unchanged', key, value, value);
+      if (!_.has(data1, key)) {
+        return node('added', key, null, data2[key]);
       }
-      if (_.isPlainObject(value) && _.isPlainObject(data2[key])) {
-        return node('changed', key, value, data2[key], genDiff(value, data2[key]));
+      if (_.isEqual(data1[key], data2[key])) {
+        return node('unchanged', key, data1[key], data2[key]);
       }
-      return node('updated', key, value, data2[key]);
-    });
-
-  const part2 = Object.keys(data2)
-    .filter(key => !_.has(data1, key))
-    .map(key => node('added', key, null, data2[key]));
-
-  return [...part1, ...part2];
-};
+      if (_.isPlainObject(data1[key]) && _.isPlainObject(data2[key])) {
+        return node('changed', key, data1[key], data2[key], genDiff(data1[key], data2[key]));
+      }
+      return node('updated', key, data1[key], data2[key]);
+    })
+);
 
 const render = (diff, format) => getFormatter(format)(diff);
 
 export default (pathToFile1, pathToFile2, format) => {
-  try {
-    const data1 = parse(readFile(pathToFile1));
-    const data2 = parse(readFile(pathToFile2));
-    const diff = genDiff(data1, data2);
-    return render(diff, format);
-  } catch (e) {
-    return `${e.name}: ${e.message}`;
-  }
+  const data1 = parse(readFile(pathToFile1));
+  const data2 = parse(readFile(pathToFile2));
+  const diff = genDiff(data1, data2);
+  return render(diff, format);
 };
-
-export { addParser, addFormatter };

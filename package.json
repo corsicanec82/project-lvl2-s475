@@ -1,6 +1,6 @@
 {
   "name": "conf-handler",
-  "version": "2.1.3",
+  "version": "2.2.1",
   "description": "Utility for finding differences in configuration files",
   "main": "src/index.js",
   "keywords": [
