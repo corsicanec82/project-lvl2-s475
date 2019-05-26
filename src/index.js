@@ -7,7 +7,7 @@ import getFormatter from './formatters';
 const readFile = (pathToFile) => {
   const format = path.extname(pathToFile).replace('.', '');
   const content = fs.readFileSync(pathToFile, 'utf8');
-  return { format, content };
+  return [format, content];
 };
 
 const node = (type, key, oldValue, newValue = null, children = null) => ({
@@ -36,8 +36,8 @@ const genDiff = (data1, data2) => (
 const render = (diff, format) => getFormatter(format)(diff);
 
 export default (pathToFile1, pathToFile2, format) => {
-  const data1 = parse(readFile(pathToFile1));
-  const data2 = parse(readFile(pathToFile2));
+  const data1 = parse(...readFile(pathToFile1));
+  const data2 = parse(...readFile(pathToFile2));
   const diff = genDiff(data1, data2);
   return render(diff, format);
 };

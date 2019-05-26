@@ -33,11 +33,13 @@ const tree = (diff, indent = 0) => {
         return `${' '.repeat(indent + 2)}  ${node.key}: ${tree(node.children, indent + 4)}`;
       case 'unchanged':
         return `${' '.repeat(indent + 2)}  ${node.key}: ${stringify(node.oldValue, indent + 4)}`;
-      default:
+      case 'updated':
         return [
           `${' '.repeat(indent + 2)}- ${node.key}: ${stringify(node.oldValue, indent + 4)}`,
           `${' '.repeat(indent + 2)}+ ${node.key}: ${stringify(node.newValue, indent + 4)}`,
         ];
+      default:
+        throw new RangeError('(node.type): Invalid value: Only valid value is changed, removed, added, updated, unchanged');
     }
   });
 

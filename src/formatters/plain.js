@@ -14,8 +14,10 @@ const plain = (diff, parent = []) => diff
         return `${str} was added with value: '${showComplexValue(node.newValue)}'`;
       case 'updated':
         return `${str} was updated. From '${showComplexValue(node.oldValue)}' to '${showComplexValue(node.newValue)}'`;
-      default:
+      case 'unchanged':
         return '';
+      default:
+        throw new RangeError('(node.type): Invalid value: Only valid value is changed, removed, added, updated, unchanged');
     }
   }).filter(el => el !== '').join('\n');
 

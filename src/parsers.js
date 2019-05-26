@@ -1,16 +1,10 @@
 import yaml from 'js-yaml';
 import ini from 'ini';
 
-const parsers = new Map();
-
-const addParser = (fileExtension, parser) => {
-  parsers[fileExtension] = parser;
+const parsers = {
+  json: JSON.parse,
+  yml: yaml.safeLoad,
+  ini: ini.decode,
 };
 
-const parse = data => parsers[data.format](data.content);
-
-addParser('json', JSON.parse);
-addParser('yml', yaml.safeLoad);
-addParser('ini', ini.decode);
-
-export default parse;
+export default (format, content) => parsers[format](content);

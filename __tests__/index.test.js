@@ -14,7 +14,7 @@ test.each`
   ${'before.json'} | ${'after.json'} | ${'json'}  | ${'json-json.result'}
   ${'before.yml'}  | ${'after.yml'}  | ${'json'}  | ${'json-json.result'}
   ${'before.ini'}  | ${'after.ini'}  | ${'json'}  | ${'ini-json.result'}
-`('compare $firstFileName and $secondFileName, output format - $outputFormat', ({
+`('compare $firstFileName and $secondFileName, output format - $format', ({
   firstFileName, secondFileName, format, fileNameExpected,
 }) => {
   const firstPathToFile = `${pathToTestData}${firstFileName}`;
